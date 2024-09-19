@@ -54,7 +54,19 @@
         }
 
         /* Meeting Options */
-        .meeting-options .option-box {
+        .meeting-options {
+            display: flex;
+            justify-content: center; /* Center the option boxes */
+        }
+        .meeting-options .row {
+            display: flex;
+            justify-content: center; /* Center the column of boxes */
+            align-items: stretch; /* Make sure all boxes have the same height */
+        }
+        .option-box {
+            flex: 1; /* Allow the boxes to grow and take equal space */
+            max-width: 300px; /* Set a maximum width for the boxes */
+            margin: 0 10px; /* Add some margin for spacing */
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -62,15 +74,15 @@
             text-align: center;
             transition: transform 0.3s ease-in-out;
         }
-        .meeting-options .option-box:hover {
+        .option-box:hover {
             transform: translateY(-10px);
         }
-        .meeting-options .option-box h3 {
+        .option-box h3 {
             font-size: 22px;
             margin-bottom: 15px;
             color: #343a40;
         }
-        .meeting-options .option-box p {
+        .option-box p {
             color: #555;
         }
         .meeting-options .btn {
@@ -80,38 +92,6 @@
             font-size: 16px;
         }
 
-        /* Footer Styling */
-        .footer {
-            background-color: #343a40;
-            color: #fff;
-            padding: 40px 0;
-        }
-        .footer h3 {
-            color: #f8c94e;
-            margin-bottom: 20px;
-        }
-        .footer a {
-            color: #fff;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            color: #f8c94e;
-        }
-        .footer .social-media .social-icon {
-            font-size: 20px;
-            margin-right: 15px;
-            color: #fff;
-            transition: color 0.3s;
-        }
-        .footer .social-media .social-icon:hover {
-            color: #f8c94e;
-        }
-        .footer-bottom {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 14px;
-            color: #aaa;
-        }
     </style>
 </head>
 <body>
@@ -129,11 +109,9 @@
         </nav>
     </header>
 
-  
-
     <div class="meeting-options container my-5">
         <div class="row g-4">
-            <div class="col-md-4">
+            <div class="col-md-4 d-flex">
                 <div class="option-box">
                     <i class="fas fa-calendar-plus fa-3x mb-3" style="color: #f8c94e;"></i>
                     <h3>Schedule Meeting</h3>
@@ -141,7 +119,7 @@
                     <a href="#schedule-meeting" class="btn btn-primary">Schedule Now</a>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 d-flex">
                 <div class="option-box">
                     <i class="fas fa-video fa-3x mb-3" style="color: #28a745;"></i>
                     <h3>Start Instant Meeting</h3>
@@ -149,7 +127,7 @@
                     <a href="#instant-meeting" class="btn btn-success">Start Now</a>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 d-flex">
                 <div class="option-box">
                     <i class="fas fa-door-open fa-3x mb-3" style="color: #17a2b8;"></i>
                     <h3>Join Meeting</h3>
@@ -165,7 +143,6 @@
             <div class="tabs">
                 <button class="tab-link active" onclick="openTab(event, 'Upcoming')">Your Upcoming Meetings</button>
                 <button class="tab-link" onclick="openTab(event, 'Previous')">Your Previous Meetings</button>
-               
             </div>
     
             <div id="Upcoming" class="tab-content active">
@@ -173,26 +150,23 @@
                     <img src="static/schedule.png">
                 </div>
                 <p>Here you can view and manage your upcoming meetings.</p>
-                <a href="url">Connect to your Calender</a>
+                <a href="url">Connect to your Calendar</a>
             </div>
             <div id="Previous" class="tab-content">
                 <h2>Previous Meetings</h2>
                 <p>Here you can view your past meetings.</p>
             </div>
-          
         </div>
-    
-    
     </div>
 
     <footer class="footer">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h3>MeetingSite</h3>
-                    <p>Connecting people, one meeting at a time.</p>
-                </div>
-                <div class="col-md-4">
+            <div class="footer-logo">
+                <h2>MeetingSite</h2>
+                <p>Connecting people, one meeting at a time.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
                         <li><a href="#schedule">Schedule</a></li>
@@ -201,9 +175,17 @@
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <ul>
+                        <li><a href="#about">Company</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
                     <h3>Follow Us</h3>
-                    <ul class="social-media d-flex">
+                    <ul class="social-media">
                         <li><a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a></li>
                         <li><a href="#" class="social-icon"><i class="fab fa-twitter"></i></a></li>
                         <li><a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a></li>
@@ -221,49 +203,47 @@
     <script src="meeting.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
+            const menuToggle = document.getElementById('menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
 
-    menuToggle.addEventListener('click', function() {
-        navLinks.classList.toggle('active');
-    });
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
 
-    // Change navbar background on scroll
-    window.addEventListener('scroll', function() {
-        const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+            // Change navbar background on scroll
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
+
+        /**Accordion**/
+        function openTab(evt, tabName) {
+            var i, tabContent, tabLinks;
+
+            // Hide all tab contents
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+
+            // Remove active class from all tabs
+            tabLinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab content and add an active class to the clicked tab
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
         }
-    });
-});
 
-
-/**Accordion**/
-function openTab(evt, tabName) {
-    var i, tabContent, tabLinks;
-
-    // Hide all tab contents
-    tabContent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabContent.length; i++) {
-        tabContent[i].style.display = "none";
-    }
-
-    // Remove active class from all tabs
-    tabLinks = document.getElementsByClassName("tab-link");
-    for (i = 0; i < tabLinks.length; i++) {
-        tabLinks[i].className = tabLinks[i].className.replace(" active", "");
-    }
-
-    // Show the current tab content and add an active class to the clicked tab
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
-
-// Set the default active tab
-document.getElementById("Upcoming").style.display = "block";
-
+        // Set the default active tab
+        document.getElementById("Upcoming").style.display = "block";
     </script>
 </body>
 </html>

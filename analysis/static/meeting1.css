@@ -279,16 +279,17 @@ img{
 
 
 
- /**FOOTER**/
 
- .footer {
+
+  /**FOOTER**/
+
+  .footer {
     background: #333;
     color: #fff;
     padding: 40px 0;
     position: relative;
     bottom: 0;
     width: 100%;
-    margin-top: 100px;
 }
 
 .container {
