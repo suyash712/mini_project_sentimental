@@ -879,7 +879,7 @@ padding-top: 20px;
 
   /**Reportsection**/
   .report-section {
-    height: 500px;
+    height: 600px;
     display: flex;
     align-items: center;
     margin-top: 50px;
@@ -896,9 +896,10 @@ padding-top: 20px;
 }
 
 .report-image {
-    width: 50%; /* Increased size from 40% to 50% */
+    width: 60%; /* Increased size from 40% to 50% */
     height: auto;
     border-radius: 10px;
+    padding-left: 30px;
     transition: transform 0.3s ease;
 }
 
@@ -913,7 +914,7 @@ padding-top: 20px;
 }
 
 .report-text h2 {
-    font-size: 1.75em; /* Larger title size */
+    font-size: 2.5em; /* Larger title size */
     color: #ffffff; /* White for better contrast against the gradient */
     margin-bottom: 10px;
     transition: color 0.3s ease;
