@@ -1,0 +1,236 @@
+/* Reset basic styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0077b6, #5e60ce);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Container for the form */
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    padding: 2em;
+    transition: 0.5s ease-in-out;
+}
+
+/* Form box styles */
+.form-box {
+    width: 100%;
+    padding: 2em;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Animation when form box enters view */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-box {
+    animation: slideUp 0.8s ease-in-out;
+}
+
+/* Toggle buttons for switching between login and register */
+.toggle-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5em;
+}
+
+.toggle-buttons button {
+    width: 100%;
+    padding: 0.8em;
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    cursor: pointer;
+    position: relative;
+    color: #5e60ce;
+    transition: color 0.4s;
+}
+
+.toggle-buttons button.active {
+    color: #fff;
+    background: linear-gradient(45deg, #0077b6, #5e60ce);
+    border-radius: 8px;
+}
+
+.form-content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+}
+
+.form-content.active {
+    display: block;
+    opacity: 1;
+}
+
+.form-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #0077b6;
+    margin-bottom: 1.5em;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 1.5em;
+}
+
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #0077b6;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 1em 1em 1em 3.5em;
+    font-size: 1em;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #333;
+    transition: border-color 0.4s, background-color 0.4s;
+}
+
+.input-group input:focus {
+    border-color: #0077b6;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.input-group label {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+    color: #aaa;
+    pointer-events: none;
+    transition: 0.3s ease-in-out;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+    top: -12px;
+    font-size: 0.85em;
+    color: #0077b6;
+}
+
+.input-group .show-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #0077b6;
+    font-size: 1.2em;
+}
+
+.forgot-pass {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5em;
+}
+
+.forgot-pass a {
+    text-decoration: none;
+    color: #0077b6;
+    font-size: 0.9em;
+    transition: color 0.3s;
+}
+
+.forgot-pass a:hover {
+    color: #48cae4;
+}
+
+.btn {
+    width: 100%;
+    padding: 0.8em;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #0077b6, #48cae4);
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.4s;
+}
+
+.btn:hover {
+    background-color: #48cae4;
+}
+
+.stay-signed-in {
+    display: flex;
+    align-items: center;
+    margin-top: 1.5em;
+}
+
+.stay-signed-in label {
+    margin-left: 0.5em;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.stay-signed-in input {
+    accent-color: #0077b6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+
+    .form-box {
+        padding: 1.5em;
+    }
+
+    .form-title {
+        font-size: 2em;
+    }
+
+    .btn {
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.8em;
+    }
+
+    .btn {
+        font-size: 0.9em;
+    }
+}
