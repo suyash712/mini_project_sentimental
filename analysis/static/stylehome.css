@@ -725,44 +725,211 @@ padding-top: 20px;
   /**Ss-Section**/
   .ss-section {
     height: 700px;
+    width: 100%;
+    margin-top: 50px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 50px;
-  }
+    padding: 40px;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #1e2959, #111b4a); /* Updated gradient background */
+    box-shadow: 0px 15px 45px rgba(0, 0, 0, 0.7); /* Adds more depth */
+    position: relative;
+    overflow: hidden;
+}
 
-  .text-content {
-    width: 45%;
+/* Glowing background animation */
+.ss-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(250, 90, 80, 0.15), transparent 50%);
+    animation: rotateBackground 10s infinite linear;
+    z-index: 0;
+}
+
+@keyframes rotateBackground {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Text Content */
+.text-content {
+    width: 35%;
+    position: relative;
+    z-index: 1;
 }
 
 .text-content h1 {
-    font-size: 3em;
+    font-size: 3.5em;
     margin-bottom: 20px;
+    line-height: 1.2;
+    color: #f1f1f1; /* Softer white for the heading */
+    background: linear-gradient(to right, #6A82FB, #FC5C7D); /* Gradient text effect */
+
+    animation: fadeIn 2s ease-in-out;
 }
 
 .text-content p {
     font-size: 1.2em;
-    line-height: 1.5;
+    line-height: 1.6;
+    color: #e0e0e0; /* Slightly lighter white for text */
+    margin-bottom: 20px;
+    animation: fadeIn 2s ease-in-out;
 }
 
+.text-content p::first-letter {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #FC5C7D; /* Highlighted first letter */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Image Content */
 .image-content {
-    width: 50%;
+    width: 60%;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    z-index: 1;
 }
 
 .image-content img {
     max-width: 100%;
-    border-radius: 10px;
+    border-radius: 15px;
+    box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.5); /* Adds a shadow for depth */
+    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+    z-index: 1;
 }
+
+.image-content img:hover {
+    transform: scale(1.08); /* Slight zoom on hover */
+    box-shadow: 0px 25px 55px rgba(0, 0, 0, 0.7); /* Deepens the shadow on hover */
+}
+
+/* Glow effect on hover */
+.image-content img:hover::before {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    width: 300px;
+    height: 300px;
+    background: rgba(108, 99, 255, 0.3);
+    filter: blur(50px);
+    z-index: -1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section-wrapper {
+        flex-direction: column;
+        width: 100%; /* Ensure it fits smaller screens */
+        padding: 20px;
+    }
+
+    .text-content {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .text-content h1 {
+        font-size: 2.5em;
+    }
+
+    .text-content p {
+        font-size: 1.1em;
+    }
+
+    .image-content {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-content h1 {
+        font-size: 2em;
+    }
+
+    .text-content p {
+        font-size: 1em;
+    }
+}
+
+
+
+
   /**Reportsection**/
-  .reportsection {
-    margin-top: 100px;
-    height: 400px;
-    width: 100%;
-    border: solid #333;
-  }
+
+.report-section {
+    display: flex;
+    align-items: center;
+    margin-top: 50px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(145deg, #6a82fb, #fc5c7d);
+
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.report-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.report-image {
+    width: 40%;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.report-image:hover {
+    transform: scale(1.05);
+    filter: brightness(90%); /* Slightly darken on hover */
+}
+
+.report-text {
+    width: 60%;
+    padding: 20px;
+}
+
+.report-text h2 {
+    font-size: 1.75em; /* Larger title size */
+    color: #0056b3; /* Dark blue for title */
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+.report-text p {
+    font-size: 1.1em; /* Slightly larger font size for body text */
+    color: #444; /* Darker grey for better readability */
+    line-height: 1.6; /* Increase line height for better readability */
+}
+
+.report-section:hover .report-text h2 {
+    color: #007BFF; /* Lighter blue on hover */
+}
+
 
 
 
