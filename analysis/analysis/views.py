@@ -54,3 +54,6 @@ def stop_recording(request):
     if response.status_code == 200:
         return JsonResponse({'message': 'Recording stopped'})
     return JsonResponse({'error': 'Failed to stop recording'}, status=500)
+
+
+
