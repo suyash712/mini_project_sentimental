@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Meeting Website</title>
     <link rel="stylesheet" href="static/list.css">
     <style>
@@ -83,22 +86,23 @@
 
 <div class="heading">
     <h1><span class="badge rounded-pill text-bg-info">EMO-TRACK</span></h1>
-    <input type="text" placeholder="Search.." style="margin-left: 700px; " >
+    <input type="text" id="searchInput" placeholder="Search.." style="margin-left: 700px;">
     <div class="dropdown">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-left: 10px;">
-          Dropdown link
-        </a>
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-left: 10px;">
+          sort
+        </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#">Action</a></li>
-          <li><a class="dropdown-item" href="#">Another action</a></li>
-          <li><a class="dropdown-item" href="#">Something else here</a></li>
-        </ul>
+            <li><a class="dropdown-item" href="#" onclick="sortTable('date')">by date</a></li>
+            <li><a class="dropdown-item" href="#" onclick="sortTable('username')">by username</a></li>
+            <li><a class="dropdown-item" href="#" onclick="sortTable('meetingId')">by meeting id</a></li>
+          </ul>
       </div>
+      
 </div>
 
 <div class="container" style="max-width: 1200px; overflow: auto;">
     <div class="table-responsive">
-        <table class="table table-bordered table-hover">
+        <table class="table table-bordered table-hover" id="meetingTable">
             <thead class="table-dark">
                 <tr>
                     <th>No.</th>
@@ -345,6 +349,26 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="static/list.js"></script>
 
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let searchQuery = this.value.toLowerCase();
+        let table = document.getElementById('meetingTable');
+        let rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            let row = rows[i];
+            let rowData = row.textContent.toLowerCase();
+            if (rowData.includes(searchQuery)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
 
 <script src="list.js"></script>
@@ -448,5 +472,35 @@
     nervousnessChart.update(); 
     positiveNegativeChart.update();
 });</script>
+
+<script>
+    function sortTable(sortBy) {
+    let table = document.getElementById('meetingTable');
+    let tbody = table.getElementsByTagName('tbody')[0];
+    let rows = Array.from(tbody.getElementsByTagName('tr'));
+
+    rows.sort((a, b) => {
+        let aValue, bValue;
+
+        if (sortBy === 'date') {
+            aValue = new Date(a.cells[3].textContent);
+            bValue = new Date(b.cells[3].textContent);
+        } else if (sortBy === 'username') {
+            aValue = a.cells[2].textContent.toLowerCase();
+            bValue = b.cells[2].textContent.toLowerCase();
+        } else if (sortBy === 'meetingId') {
+            aValue = parseInt(a.cells[1].textContent);
+            bValue = parseInt(b.cells[1].textContent);
+        }
+
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+        return 0;
+    });
+
+    // Reorder the table
+    rows.forEach(row => tbody.appendChild(row));
+}
+</script>
 </body>
 </html>
