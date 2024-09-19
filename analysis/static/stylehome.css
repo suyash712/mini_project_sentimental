@@ -878,16 +878,14 @@ padding-top: 20px;
 
 
   /**Reportsection**/
-
-.report-section {
+  .report-section {
+    height: 400px;
     display: flex;
     align-items: center;
     margin-top: 50px;
     border-radius: 12px;
     overflow: hidden;
-    background: linear-gradient(145deg, #6a82fb, #fc5c7d);
-
-
+    background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient background */
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -901,6 +899,7 @@ padding-top: 20px;
     width: 40%;
     height: auto;
     transition: transform 0.3s ease;
+    border-radius: 10px;
 }
 
 .report-image:hover {
@@ -915,19 +914,19 @@ padding-top: 20px;
 
 .report-text h2 {
     font-size: 1.75em; /* Larger title size */
-    color: #0056b3; /* Dark blue for title */
+    color: #ffffff; /* White for better contrast against the gradient */
     margin-bottom: 10px;
     transition: color 0.3s ease;
 }
 
 .report-text p {
     font-size: 1.1em; /* Slightly larger font size for body text */
-    color: #444; /* Darker grey for better readability */
+    color: #f1f1f1; /* Softer white for better readability */
     line-height: 1.6; /* Increase line height for better readability */
 }
 
 .report-section:hover .report-text h2 {
-    color: #007BFF; /* Lighter blue on hover */
+    color: #ffeb3b; /* Bright yellow on hover for emphasis */
 }
 
 
