@@ -879,7 +879,7 @@ padding-top: 20px;
 
   /**Reportsection**/
   .report-section {
-    height: 400px;
+    height: 500px;
     display: flex;
     align-items: center;
     margin-top: 50px;
@@ -896,10 +896,10 @@ padding-top: 20px;
 }
 
 .report-image {
-    width: 40%;
+    width: 50%; /* Increased size from 40% to 50% */
     height: auto;
-    transition: transform 0.3s ease;
     border-radius: 10px;
+    transition: transform 0.3s ease;
 }
 
 .report-image:hover {
@@ -908,7 +908,7 @@ padding-top: 20px;
 }
 
 .report-text {
-    width: 60%;
+    width: 50%; /* Adjusted to maintain layout balance */
     padding: 20px;
 }
 
@@ -928,6 +928,7 @@ padding-top: 20px;
 .report-section:hover .report-text h2 {
     color: #ffeb3b; /* Bright yellow on hover for emphasis */
 }
+
 
 
 
