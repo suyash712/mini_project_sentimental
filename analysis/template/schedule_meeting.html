@@ -133,7 +133,7 @@
             box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
         }
 
-        h2 {
+        .form-container h2 {
             font-size: 2.5rem;
             text-align: center;
   color: #083B66; /* Darker contrast text color */
@@ -221,6 +221,115 @@
                 transform: translateY(0);
             }
         }
+
+         /**FOOTER**/
+
+.footer {
+    background: #333;
+    color: #fff;
+    padding: 40px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-logo h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.footer-logo p {
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.footer-section {
+    width: 30%;
+}
+
+.footer-section h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-section h3::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: #ff9800;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease;
+}
+
+.footer-section h3:hover::after {
+    width: 70px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #ff9800;
+}
+
+.social-media {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+
+.social-media li {
+    margin-right: 15px;
+}
+
+.social-icon {
+    color: #fff;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+    color: #ff9800;
+}
+
+.footer-bottom {
+    text-align: center;
+    align-items: end; 
+}    
+
+.footer-bottom p {
+    font-size: 14px;
+    opacity: 0.8;
+}
     </style>
 </head>
 <body>
@@ -264,6 +373,45 @@
             <button type="submit">Schedule Meeting</button>
         </form>
     </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">
+                <h2>MeetingSite</h2>
+                <p>Connecting people, one meeting at a time.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#schedule">Schedule</a></li>
+                        <li><a href="#join">Join</a></li>
+                        <li><a href="#host">Host</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <ul>
+                        <li><a href="#about">Company</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <ul class="social-media">
+                        <li><a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#" class="social-icon"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a href="#" class="social-icon"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MeetingSite. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>
