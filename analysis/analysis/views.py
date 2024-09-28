@@ -30,36 +30,10 @@ from django.shortcuts import render, redirect
 import jwt
 import datetime
 
-def generate_jitsi_token(user, room_name):
-    payload = {
-        "aud": "jitsi",
-        "iss": "my_app",
-        "sub": "meet.jit.si",
-        "room": room_name,
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
-        "user": {
-            "name": user.username,
-            "email": user.email,
-            "avatar": "https://example.com/avatar.jpg",  # Optional user avatar
-        }
-    }
-    token = jwt.encode(payload, 'your-secret-key', algorithm='HS256')
-    return token
 
-def join_meeting(request, room_name):
-    if not request.user.is_authenticated:
-        return redirect('login')
 
-    # Generate a JWT token for the user
-    token = generate_jitsi_token(request.user, room_name)
 
-    return render(request, 'meeting.html', {
-        'room_name': room_name,
-        'token': token
-    })
 
-def home(request):
-    return render(request, 'home.html')
 '''
 from daily_co.client import DailyClient
 
