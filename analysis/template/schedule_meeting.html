@@ -106,7 +106,7 @@
 
         /* Form Container */
         .form-container {
-            background-color: #fff;
+            background-color: rgba(8, 181, 212, 0.1);
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -114,6 +114,19 @@
             margin: 40px auto;
             transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
+        .form-container::before{
+            content: '';
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(8, 181, 212, 0.3); /* Stylish circle decoration */
+  border-radius: 50%;
+  z-index: -1;
+  animation: floatCircle 6s ease-in-out infinite;
+    }
+
 
         .form-container:hover {
             transform: translateY(-5px);
@@ -121,18 +134,21 @@
         }
 
         h2 {
+            font-size: 2.5rem;
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 28px;
-            color: #0083b0;
-            letter-spacing: 1px;
-        }
+  color: #083B66; /* Darker contrast text color */
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
 
         label {
             font-weight: bold;
             margin-top: 10px;
             display: block;
-            color: #333;
+            color: #000000;
         }
 
         input, textarea, select {
