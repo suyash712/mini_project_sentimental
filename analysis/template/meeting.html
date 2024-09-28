@@ -3,49 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jitsi Meeting Interface</title>
+    <title>Jitsi Meeting with Recording</title>
     <style>
-        #jitsi-container {
-            width: 100%;
+        #jitsi-meet {
             height: 600px;
+            width: 100%;
         }
-        body {
-            font-family: Arial, sans-serif;
+        button {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-
-<h1>Jitsi Meeting </h1>
-<div id="jitsi-container"></div>
+    <h1>Jitsi Meeting Room</h1>
+    
+    <h1>Joining Meeting: {{ meeting.meeting_topic }}</h1>
+<div id="jitsi-container" style="width: 100%; height: 600px;"></div>
 
 <script src="https://meet.jit.si/external_api.js"></script>
 <script>
-    // Configure the Jitsi meeting options
     const domain = "meet.jit.si";
     const options = {
-        roomName: "YourUniqueRoomName", // Replace with your custom room name
+        roomName: "{{ meeting.meeting_id }}",
         width: '100%',
         height: 600,
-        parentNode: document.querySelector('#jitsi-container'),
-        configOverwrite: {
-            enableWelcomePage: false // Disable welcome page
-        },
-        interfaceConfigOverwrite: {
-            TOOLBAR_BUTTONS: [
-                'microphone', 'camera', 'desktop', 'fullscreen',
-                'fodeviceselection', 'hangup', 'chat', 'raisehand',
-                'videoquality', 'tileview', 'settings', 'invite'
-            ] // Customize toolbar buttons
-        }
+        parentNode: document.querySelector('#jitsi-container')
     };
-    // Initialize the Jitsi API
     const api = new JitsiMeetExternalAPI(domain, options);
-    
-    // Event listener for when the meeting ends
-    api.addEventListener('readyToClose', () => {
-        alert('Meeting has ended.');
-    });
 </script>
 
 </body>
