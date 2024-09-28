@@ -71,7 +71,7 @@
             <div class="logo">EmoTrack</div>
             <ul class="nav-links">
                 <li><a href="http://127.0.0.1:8000/home">HOME</a></li>
-                <li><a href="http://127.0.0.1:8000/meetoption">MEETING</a></li>
+                <li><a href="http://127.0.0.1:8000/list">MEETING</a></li>
                 <li><a href="http://127.0.0.1:8000/meetlist">LIST</a></li>
                 <li><a href="#login" class="login-btn">Login</a></li>
             </ul>
@@ -107,114 +107,36 @@
                 <tr>
                     <th>No.</th>
                     <th>Meeting ID</th>
-                    <th>Username</th>
+                    <th>Topic</th>
                     <th>Date</th>
                 </tr>
             </thead>
             <tbody>
+                {% for meeting in completed_meetings %}
                 <tr>
                     <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">1</div>
+                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ forloop.counter }}</div>
                     </td>
                     <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">123456</div>
+                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.meeting_id }}</div>
                     </td>
                     <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">JohnDoe</div>
+                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.meeting_topic }}</div>
                     </td>
                     <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">2024-08-29</div>
+                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.start_time }}</div>
                     </td>
                 </tr>
+                {% empty %}
                 <tr>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">2</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">654321</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">JaneSmith</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">2024-08-28</div>
-                    </td>
+                    <td colspan="4" class="text-center">No completed meetings found.</td>
                 </tr>
-                <tr>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">1</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">123456</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">JohnDoe</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">2024-08-29</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">1</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">123456</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">JohnDoe</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">2024-08-29</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">1</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">123456</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">JohnDoe</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">2024-08-29</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">1</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">123456</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">JohnDoe</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">2024-08-29</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">1</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">123456</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">JohnDoe</div>
-                    </td>
-                    <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">2024-08-29</div>
-                    </td>
-                </tr>
-                
+                {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

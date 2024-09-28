@@ -23,10 +23,17 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('meet',views.meet),
-    path('',views.home),
+    path('h',views.home),
     path('home',views.home),
     path('meetlist',views.meetlist),
     path('meetoption',views.meetoption),
-  path('start-recording/', views.start_recording, name='start_recording'),
-    path('stop-recording/', views.stop_recording, name='stop_recording'),
+    path('meeting/<str:room_name>/', views.join_meeting, name='join_meeting'),
+    path('schedule-meeting/', views.schedule_meeting, name='schedule_meeting'),
+    path('meeting-success/', views.meeting_success, name='meeting_success'), 
+       path('list', views.meeting_list, name='meeting_list'),
+    path('join-meeting/<str:meeting_id>/', views.join_meeting, name='join_meeting'),
+      path('meeting/<int:meeting_id>/', views.view_meeting_details, name='view_meeting_details'),
+        
+    
+
 ]

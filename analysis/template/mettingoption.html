@@ -91,6 +91,119 @@
             border-radius: 25px;
             font-size: 16px;
         }
+       /* General Styles */
+.meeting-section {
+    margin: 20px;
+}
+
+h3 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Tab Navigation Styles */
+.tabs {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.tab-link {
+    background-color: #f2f2f2;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-right: 5px;
+    font-size: 1em;
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.tab-link.active {
+    background-color: #007BFF;
+    color: white;
+}
+
+.tab-link:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* Table Structure */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.meeting-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.meeting-table th, .meeting-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.meeting-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.meeting-table td {
+    color: #555;
+}
+
+.meeting-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.btn-primary {
+    background-color: #007BFF;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #565e64;
+}
+
+/* No Meetings Message */
+.no-meetings {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table-container {
+        overflow-x: scroll;
+    }
+
+    .meeting-table {
+        width: 100%;
+    }
+}
 
     </style>
 </head>
@@ -101,7 +214,7 @@
                 <div class="logo">EmoTrack</div>
                 <ul class="nav-links">
                     <li><a href="http://127.0.0.1:8000/home">HOME</a></li>
-                    <li><a href="http://127.0.0.1:8000/meetoption">MEETING</a></li>
+                    <li><a href="http://127.0.0.1:8000/list">MEETING</a></li>
                     <li><a href="http://127.0.0.1:8000/meetlist">LIST</a></li>
                     <li><a href="#login" class="login-btn">Login</a></li>
                 </ul>
@@ -116,7 +229,7 @@
                     <i class="fas fa-calendar-plus fa-3x mb-3" style="color: #f8c94e;"></i>
                     <h3>Schedule Meeting</h3>
                     <p>Plan your next meeting effortlessly.</p>
-                    <a href="#schedule-meeting" class="btn btn-primary">Schedule Now</a>
+                    <a href="/schedule-meeting" class="btn btn-primary">Schedule Now</a>
                 </div>
             </div>
             <div class="col-md-4 d-flex">
@@ -140,24 +253,80 @@
 
     <div class="meeting-section">
         <div class="tab-container">
+            <!-- Tabs for Upcoming and Previous Meetings -->
             <div class="tabs">
-                <button class="tab-link active" onclick="openTab(event, 'Upcoming')">Your Upcoming Meetings</button>
-                <button class="tab-link" onclick="openTab(event, 'Previous')">Your Previous Meetings</button>
+                <button class="tab-link active" onclick="openTab(event, 'Upcoming')">Upcoming Meetings</button>
+                <button class="tab-link" onclick="openTab(event, 'Previous')">Previous Meetings</button>
             </div>
     
-            <div id="Upcoming" class="tab-content active">
-                <div class="box">
-                    <img src="static/schedule.png">
+            <!-- Upcoming Meetings Section -->
+            <div id="Upcoming" class="tab-content" style="display: block;">
+                <h3>Upcoming Meetings</h3>
+                <div class="table-container">
+                    <table class="meeting-table">
+                        <thead>
+                            <tr>
+                                <th>Meeting Topic</th>
+                                <th>Meeting ID</th>
+                                <th>Date & Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for meeting in upcoming_meetings %}
+                            <tr>
+                                <td>{{ meeting.meeting_topic }}</td>
+                                <td>{{ meeting.meeting_id }}</td>
+                                <td>{{ meeting.start_time }}</td>
+                                <td>{{ meeting.start_time }}</td>
+                                <td>
+                                    <a href="" class="btn btn-primary">Join</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="no-meetings">No upcoming meetings</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <p>Here you can view and manage your upcoming meetings.</p>
-                <a href="url">Connect to your Calendar</a>
             </div>
-            <div id="Previous" class="tab-content">
-                <h2>Previous Meetings</h2>
-                <p>Here you can view your past meetings.</p>
+    
+            <!-- Previous Meetings Section -->
+            <div id="Previous" class="tab-content" style="display: none;">
+                <h3>Previous Meetings</h3>
+                <div class="table-container">
+                    <table class="meeting-table">
+                        <thead>
+                            <tr>
+                                <th>Meeting Topic</th>
+                                <th>Date & Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for meeting in previous_meetings %}
+                            <tr>
+                                <td>{{ meeting.meeting_topic }}</td>
+                                <td>{{ meeting.start_time }}</td>
+                                <td>
+                                    <a href="" class="btn btn-secondary">View Details</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="no-meetings">No previous meetings</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+    
+    
 
     <footer class="footer">
         <div class="container">
@@ -245,5 +414,27 @@
         // Set the default active tab
         document.getElementById("Upcoming").style.display = "block";
     </script>
+    <script>
+        function openTab(event, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab contents
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+    
+            // Remove the active class from all tab links
+            tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+    
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.className += " active";
+        }
+    </script>
+    
 </body>
 </html>

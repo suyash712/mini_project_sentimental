@@ -3,79 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jitsi Conference</title>
+    <title>Jitsi Meeting with Recording</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        #jitsi-container {
-            margin-top: 20px;
-            height: 700px;
+        #jitsi-meet {
+            height: 600px;
             width: 100%;
         }
-        input, button {
-            padding: 10px;
-            margin: 10px;
+        button {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+    <h1>Jitsi Meeting Room</h1>
+    
+    <h1>Joining Meeting: {{ meeting.meeting_topic }}</h1>
+<div id="jitsi-container" style="width: 100%; height: 600px;"></div>
 
-    <h1>Jitsi Meet Integration</h1>
-
-    <!-- Create Meeting Section -->
-    <h2>Create a New Meeting</h2>
-    <button id="create-meeting-btn">Create Meeting</button>
-
-    <!-- Join Meeting Section -->
-    <h2>Join an Existing Meeting</h2>
-    <input type="text" id="room-name" placeholder="Enter Room Name" />
-    <button id="join-meeting-btn">Join Meeting</button>
-
-    <!-- Jitsi Meeting Display Area -->
-    <div id="jitsi-container"></div>
-
-    <!-- Jitsi Meet API -->
-    <script src="https://meet.jit.si/external_api.js"></script>
-    <script>
-        let api = null;
-
-        // Create a meeting with a random room name
-        document.getElementById('create-meeting-btn').addEventListener('click', function() {
-            const roomName = 'Room-' + Math.random().toString(36).substring(2, 15); // Generate random room name
-            startMeeting(roomName);
-            alert("Meeting Created! Room Name: " + roomName);
-        });
-
-        // Join an existing meeting
-        document.getElementById('join-meeting-btn').addEventListener('click', function() {
-            const roomName = document.getElementById('room-name').value;
-            if (roomName.trim() !== "") {
-                startMeeting(roomName);
-            } else {
-                alert("Please enter a valid room name!");
-            }
-        });
-
-        // Function to start or join a Jitsi meeting
-        function startMeeting(roomName) {
-            if (api) {
-                api.dispose();  // Clean up any existing meeting before starting a new one
-            }
-
-            const domain = "meet.jit.si";
-            const options = {
-                roomName: roomName,
-                width: '100%',
-                height: 700,
-                parentNode: document.querySelector('#jitsi-container'),
-                configOverwrite: {},
-                interfaceConfigOverwrite: {}
-            };
-            api = new JitsiMeetExternalAPI(domain, options);
-        }
-    </script>
+<script src="https://meet.jit.si/external_api.js"></script>
+<script>
+    const domain = "meet.jit.si";
+    const options = {
+        roomName: "{{ meeting.meeting_id }}",
+        width: '100%',
+        height: 600,
+        parentNode: document.querySelector('#jitsi-container')
+    };
+    const api = new JitsiMeetExternalAPI(domain, options);
+</script>
 
 </body>
 </html>
