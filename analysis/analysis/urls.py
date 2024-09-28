@@ -23,7 +23,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('meet',views.meet),
-    path('h',views.home),
+    path('',views.home),
     path('home',views.home),
     path('meetlist',views.meetlist),
     path('meetoption',views.meetoption),
