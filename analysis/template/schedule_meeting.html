@@ -5,72 +5,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule a Meeting</title>
     <style>
+        /* Base Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f4f4f9;
-            padding: 20px;
+            margin: 0;
+            padding-top: 80px; /* Offset for fixed navbar */
         }
+
+        /* Navbar Styles */
+      
+        .navbar {
+            background: linear-gradient(90deg, #00b4db, #0083b0);
+            color: #fff;
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: #0083b0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar:hover .logo {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin: 0 20px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: #fff;
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::before {
+            width: 100%;
+        }
+
+        .login-btn {
+            border: 2px solid #fff;
+            border-radius: 4px;
+            padding: 8px 15px;
+            background-color: transparent;
+            color: #fff;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #fff;
+            color: #0083b0;
+            transform: scale(1.05);
+        }
+
+        /* Form Container */
         .form-container {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 40px auto;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        }
+
         h2 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: #0083b0;
+            letter-spacing: 1px;
         }
+
         label {
             font-weight: bold;
             margin-top: 10px;
             display: block;
+            color: #333;
         }
+
         input, textarea, select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 5px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 6px;
+            transition: border-color 0.3s ease;
         }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        /* Button Styling */
         button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-size: 18px;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
+
         button:hover {
             background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        /* Animation on Page Load */
+        .form-container, h2, input, label, button {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .form-container {
+            animation-delay: 0.1s;
+        }
+
+        h2 {
+            animation-delay: 0.2s;
+        }
+
+        label, input, textarea, button {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>Schedule a Meeting</h2>
-    <form action="{% url 'schedule_meeting' %}" method="POST">
-        {% csrf_token %}
-        <label for="meeting-title">Meeting ID</label>
-        <input type="text" id="meeting-title" name="meeting_Id" placeholder="Enter meeting Id" required>`
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">EMO-TRACK</div>
+                <ul class="nav-links">
+                    <li><a href="/home">HOME</a></li>
+                    <li><a href="/list">MEETING</a></li>
+                    <li><a href="/meetlist">LIST</a></li>
+                    <li><a href="#login.html" class="login-btn">Login</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-        <label for="meeting-title">Meeting Title</label>
-        <input type="text" id="meeting-title" name="meeting_title" placeholder="Enter meeting title" required>
+    <div class="form-container">
+        <h2>Schedule a Meeting</h2>
+        <form action="{% url 'schedule_meeting' %}" method="POST">
+            {% csrf_token %}
+            <label for="meeting-id">Meeting ID</label>
+            <input type="text" id="meeting-id" name="meeting_Id" placeholder="Enter meeting ID" required>
 
-        <label for="date">Meeting Date</label>
-        <input type="date" id="date" name="meeting_date" required>
+            <label for="meeting-title">Meeting Title</label>
+            <input type="text" id="meeting-title" name="meeting_title" placeholder="Enter meeting title" required>
 
-        <label for="time">Meeting Time</label>
-        <input type="time" id="time" name="meeting_time" required>
+            <label for="description">Meeting Description</label>
+            <textarea id="description" name="meeting_description" placeholder="Enter meeting description" required></textarea>
 
-        
-        <button type="submit">Schedule Meeting</button>
-    </form>
-</div>
+            <label for="date">Meeting Date</label>
+            <input type="date" id="date" name="meeting_date" required>
+
+            <label for="time">Meeting Time</label>
+            <input type="time" id="time" name="meeting_time" required>
+
+            <label for="duration">Meeting Duration</label>
+            <input type="hour" id="duration" name="meeting_duration" placeholder="hh:mm" required>
+
+            <button type="submit">Schedule Meeting</button>
+        </form>
+    </div>
 
 </body>
 </html>
