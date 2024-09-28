@@ -106,32 +106,61 @@
 
         /* Form Container */
         .form-container {
-            background-color: rgba(8, 181, 212, 0.1);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            max-width: 700px;
-            margin: 40px auto;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        .form-container::before{
-            content: '';
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  width: 200px;
-  height: 200px;
-  background-color: rgba(8, 181, 212, 0.3); /* Stylish circle decoration */
-  border-radius: 50%;
-  z-index: -1;
-  animation: floatCircle 6s ease-in-out infinite;
+    background: linear-gradient(135deg, rgba(8, 181, 212, 0.3), rgba(0, 147, 233, 0.3));
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    margin: 50px auto;
+    transition: all 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-container:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+
+
+.form-container::before,
+.form-container::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(8, 181, 212, 0.15);
+    z-index: -1;
+    animation: float 8s ease-in-out infinite;
+}
+
+.form-container::before {
+    width: 250px;
+    height: 250px;
+    top: -100px;
+    right: -150px;
+    animation-delay: 0s;
+}
+
+.form-container::after {
+    width: 150px;
+    height: 150px;
+    bottom: -50px;
+    left: -100px;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
     }
-
-
-        .form-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
-        }
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
+    100% {
+        transform: translateY(0) rotate(360deg);
+    }
+}
 
         .form-container h2 {
             font-size: 2.5rem;
@@ -172,6 +201,12 @@
         }
 
         /* Button Styling */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
         button {
             width: 100%;
             padding: 12px;
@@ -188,7 +223,6 @@
             background-color: #0056b3;
             transform: scale(1.05);
         }
-
         button:focus {
             outline: none;
         }
