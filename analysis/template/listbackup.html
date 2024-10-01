@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Meeting Website</title>
+    <link rel="stylesheet" href="static/list.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            height: auto; 
+            overflow: visible; 
+        }
+        .modal-content {
+            max-height: 90vh; 
+            overflow-y: auto; 
+        }
+        .table-responsive {
+            overflow-x: auto; 
+        }
+        .modal-lg {
+            max-width: 900px;
+        }
+        .chart-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 10px;
+            height: 250px;
+            margin-bottom: 20px;
+        }
+        .chart-heading {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        .chart-wrapper {
+            height: 200px;
+        }
+        .emotion-summary {
+            background-color: #e9ecef;
+            border-left: 4px solid #007bff;
+        }
+        .emotion-summary p {
+            margin-bottom: 0;
+        }
+        .lead {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .description-box {
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">EmoTrack</div>
+            <ul class="nav-links">
+                <li><a href="http://127.0.0.1:8000/home">HOME</a></li>
+                <li><a href="http://127.0.0.1:8000/list">MEETING</a></li>
+                <li><a href="http://127.0.0.1:8000/meetlist">LIST</a></li>
+                <li><a href="#login" class="login-btn">Login</a></li>
+            </ul>
+            <div class="menu-toggle" id="menu-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="heading">
+    <h1><span class="badge rounded-pill text-bg-info">EMO-TRACK</span></h1>
+    <input type="text" id="searchInput" placeholder="Search.." style="margin-left: 700px;">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-left: 10px;">
+          sort
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="sortTable('date')">by date</a></li>
+            <li><a class="dropdown-item" href="#" onclick="sortTable('username')">by username</a></li>
+            <li><a class="dropdown-item" href="#" onclick="sortTable('meetingId')">by meeting id</a></li>
+          </ul>
+      </div>
+      
+</div>
+
+<div class="container" style="max-width: 1200px; overflow: auto;">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="meetingTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>No.</th>
+                    <th>Meeting ID</th>
+                    <th>Topic</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meeting in completed_meetings %}
+                <tr>
+                    <td>
+                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ forloop.counter }}</div>
+                    </td>
+                    <td>
+                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.meeting_id }}</div>
+                    </td>
+                    <td>
+                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.meeting_topic }}</div>
+                    </td>
+                    <td>
+                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.start_time }}</div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No completed meetings found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="reportModalLabel">Interview Sentiment Analysis Report</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="text-center mb-3">
+                        <p class="lead">Name: {{ meeting.user_name }} | Date: {{ meeting.start_time }}</p>
+                    </div>
+            
+                    <!-- Emotion Summary -->
+                    <div class="emotion-summary mt-4 p-3 bg-light rounded">
+                        <h6 class="text-center mb-3">Emotion Summary</h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p><strong>Confidence:</strong> {{ emotion_summary.confidence|floatformat:2 }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><strong>Excitement:</strong> {{ emotion_summary.excitement|floatformat:2 }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><strong>Nervousness:</strong> {{ emotion_summary.nervousness|floatformat:2 }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><strong>Fear:</strong> {{ emotion_summary.fear|floatformat:2 }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5 class="chart-heading">Emotion Breakdown</h5>
+                                <div class="chart-wrapper">
+                                    <canvas id="emotionPieChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- You can add more chart containers here if needed -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-logo">
+            <h2>MeetingSite</h2>
+            <p>Connecting people, one meeting at a time.</p>
+        </div>
+        <div class="footer-links">
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#schedule">Schedule</a></li>
+                    <li><a href="#join">Join</a></li>
+                    <li><a href="#host">Host</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <ul>
+                    <li><a href="#about">Company</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <ul class="social-media">
+                    <li><a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="#" class="social-icon"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a></li>
+                    <li><a href="#" class="social-icon"><i class="fab fa-instagram"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 MeetingSite. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="static/list.js"></script>
+
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let searchQuery = this.value.toLowerCase();
+        let table = document.getElementById('meetingTable');
+        let rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            let row = rows[i];
+            let rowData = row.textContent.toLowerCase();
+            if (rowData.includes(searchQuery)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+</script>
+<script>
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    boxWidth: 12,
+                    font: {
+                        size: 10
+                    }
+                }
+            }
+        }
+    };
+
+    // Emotion Breakdown (Pie Chart)
+    const emotionPieCtx = document.getElementById('emotionPieChart').getContext('2d');
+    const emotionData = {
+        confidence: {{ emotion_summary.confidence|floatformat:2 }},
+        excitement: {{ emotion_summary.excitement|floatformat:2 }},
+        nervousness: {{ emotion_summary.nervousness|floatformat:2 }},
+        fear: {{ emotion_summary.fear|floatformat:2 }}
+    };
+    const labels = Object.keys(emotionData);
+    const data = Object.values(emotionData);
+
+    const emotionPieChart = new Chart(emotionPieCtx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Emotion Breakdown',
+                data: data,
+                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0'],
+            }]
+        },
+        options: chartOptions
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+
+<script src="list.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>$('#reportModal').on('shown.bs.modal', function () {
+    confidenceChart.update(); 
+    emotionPieChart.update(); 
+    nervousnessChart.update(); 
+    positiveNegativeChart.update();
+});</script>
+
+<script>
+    function sortTable(sortBy) {
+    let table = document.getElementById('meetingTable');
+    let tbody = table.getElementsByTagName('tbody')[0];
+    let rows = Array.from(tbody.getElementsByTagName('tr'));
+
+    rows.sort((a, b) => {
+        let aValue, bValue;
+
+        if (sortBy === 'date') {
+            aValue = new Date(a.cells[3].textContent);
+            bValue = new Date(b.cells[3].textContent);
+        } else if (sortBy === 'username') {
+            aValue = a.cells[2].textContent.toLowerCase();
+            bValue = b.cells[2].textContent.toLowerCase();
+        } else if (sortBy === 'meetingId') {
+            aValue = parseInt(a.cells[1].textContent);
+            bValue = parseInt(b.cells[1].textContent);
+        }
+
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+        return 0;
+    });
+
+    // Reorder the table
+    rows.forEach(row => tbody.appendChild(row));
+}
+</script>
+<script>
+    // Assuming you pass the emotion data to the template
+    const confidenceData = {{ emotion_summary.confidence|safe }};
+    const excitementData = {{ emotion_summary.excitement|safe }};
+    const nervousnessData = {{ emotion_summary.nervousness|safe }};
+    const fearData = {{ emotion_summary.fear|safe }};
+    const labels = ['Confidence', 'Excitement', 'Nervousness', 'Fear'];
+    
+    // Create the chart with the dynamic data
+    const emotionPieChart = new Chart(emotionPieCtx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Emotion Breakdown',
+                data: [confidenceData, excitementData, nervousnessData, fearData],
+                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0'],
+            }]
+        },
+        options: chartOptions
+    });
+    </script>
+    
+</body>
+</html>

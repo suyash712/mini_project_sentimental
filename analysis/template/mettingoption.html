@@ -253,14 +253,12 @@ h3 {
 
     <div class="meeting-section">
         <div class="tab-container">
-            <!-- Tabs for Upcoming and Previous Meetings -->
             <div class="tabs">
                 <button class="tab-link active" onclick="openTab(event, 'Upcoming')">Upcoming Meetings</button>
                 <button class="tab-link" onclick="openTab(event, 'Previous')">Previous Meetings</button>
             </div>
     
-            <!-- Upcoming Meetings Section -->
-            <div id="Upcoming" class="tab-content" style="display: block;">
+            <div id="Upcoming" class="tab-content" style="display: block; overflow-y: scroll;">
                 <h3>Upcoming Meetings</h3>
                 <div class="table-container">
                     <table class="meeting-table">
@@ -269,7 +267,9 @@ h3 {
                                 <th>Meeting Topic</th>
                                 <th>Meeting ID</th>
                                 <th>Date & Time</th>
-                                <th>Action</th>
+                                <th>Upload File/Video</th>
+                                <th>Mark as Completed</th>
+                                <th>Analyze Emotions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -278,14 +278,39 @@ h3 {
                                 <td>{{ meeting.meeting_topic }}</td>
                                 <td>{{ meeting.meeting_id }}</td>
                                 <td>{{ meeting.start_time }}</td>
-                                <td>{{ meeting.start_time }}</td>
                                 <td>
-                                    <a href="" class="btn btn-primary">Join</a>
+                                    {% if meeting.file %}
+                                        <span>Already uploaded</span>
+                                    {% else %}
+                                    <form action="{% url 'upload_meeting_file' meeting.meeting_id %}" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="file" name="meeting_file" accept="video/*, .pdf, .docx, .xlsx" required>
+                                        <button type="submit" class="btn btn-secondary">Upload</button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form action="{% url 'mark_meeting_completed' meeting.meeting_id %}" method="post" onsubmit="return confirmMarkCompleted();">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success" {% if not meeting.file %}disabled{% endif %}>
+                                            Mark as Completed
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    {% if meeting.file %}
+                                    <form id="analyze-form-{{ meeting.meeting_id }}" action="{% url 'analyze_meeting' meeting.meeting_id %}" method="post" onsubmit="return confirmAnalyze();">
+                                        {% csrf_token %}
+                                        <button class="btn btn-secondary" id="analyze-button">Analyze Emotions</button>
+                                    </form>
+                                    {% else %}
+                                        <span>Upload a video first</span>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="3" class="no-meetings">No upcoming meetings</td>
+                                <td colspan="6" class="no-meetings">No upcoming meetings</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -293,7 +318,16 @@ h3 {
                 </div>
             </div>
     
-            <!-- Previous Meetings Section -->
+            <script>
+                function confirmAnalyze() {
+                    return confirm("Are you sure you want to analyze the emotions from this video?");
+                }
+    
+                function confirmMarkCompleted() {
+                    return confirm("Are you sure you want to mark this meeting as completed?");
+                }
+            </script>
+    
             <div id="Previous" class="tab-content" style="display: none;">
                 <h3>Previous Meetings</h3>
                 <div class="table-container">
@@ -311,7 +345,7 @@ h3 {
                                 <td>{{ meeting.meeting_topic }}</td>
                                 <td>{{ meeting.start_time }}</td>
                                 <td>
-                                    <a href="" class="btn btn-secondary">View Details</a>
+                                    <a href="">View Details</a>
                                 </td>
                             </tr>
                             {% empty %}
@@ -325,6 +359,9 @@ h3 {
             </div>
         </div>
     </div>
+    
+    
+    
     
     
 
@@ -435,6 +472,36 @@ h3 {
             event.currentTarget.className += " active";
         }
     </script>
+        <script>
+            document.getElementById('analyze-button').addEventListener('click', function() {
+                var meetingId = this.getAttribute('data-meeting-id');
+        
+                fetch(`/analyze-meeting/${meetingId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',  // Ensure this token is correctly rendered
+                        'Content-Type': 'application/json',  // Optional, depending on your needs
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Emotions analyzed successfully!');
+                        console.log(data.emotions);
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        </script>
+        
+
     
 </body>
 </html>

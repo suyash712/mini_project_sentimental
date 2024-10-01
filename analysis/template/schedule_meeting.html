@@ -365,6 +365,7 @@
     opacity: 0.8;
 }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-w76A2z02WOwE5KZd2zU6ARi70v6i4mEptFfK1VvLVrZLuq8pCw6gYN2ZZrNfQv4h" crossorigin="anonymous">
 </head>
 <body>
 
@@ -384,26 +385,20 @@
 
     <div class="form-container">
         <h2>Schedule a Meeting</h2>
-        <form action="{% url 'schedule_meeting' %}" method="POST">
+        <form method="POST">
             {% csrf_token %}
-            <label for="meeting-id">Meeting ID</label>
-            <input type="text" id="meeting-id" name="meeting_Id" placeholder="Enter meeting ID" required>
-
-            <label for="meeting-title">Meeting Title</label>
-            <input type="text" id="meeting-title" name="meeting_title" placeholder="Enter meeting title" required>
-
-            <label for="description">Meeting Description</label>
-            <textarea id="description" name="meeting_description" placeholder="Enter meeting description" required></textarea>
-
-            <label for="date">Meeting Date</label>
-            <input type="date" id="date" name="meeting_date" required>
-
-            <label for="time">Meeting Time</label>
-            <input type="time" id="time" name="meeting_time" required>
-
-            <label for="duration">Meeting Duration</label>
-            <input type="hour" id="duration" name="meeting_duration" placeholder="hh:mm" required>
-
+            <label for="meeting_id">Meeting ID:</label>
+            <input type="text" id="meeting_id" name="meeting_id" required>
+        
+            <label for="meeting_title">Meeting Title:</label>
+            <input type="text" id="meeting_title" name="meeting_title" required>
+        
+            <label for="meeting_date">Meeting Date:</label>
+            <input type="date" id="meeting_date" name="meeting_date" required>
+        
+            <label for="meeting_time">Meeting Time:</label>
+            <input type="time" id="meeting_time" name="meeting_time" required>
+        
             <button type="submit">Schedule Meeting</button>
         </form>
     </div>
@@ -446,6 +441,7 @@
             </div>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-puWUXypN8fAyQ0Wx1jD+1d4WdK5y7RPxRl6NlZicT+RBpOAB/bmf9e30p6N9Ak/" crossorigin="anonymous"></script>
 
 </body>
 </html>

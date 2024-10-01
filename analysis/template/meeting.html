@@ -1,36 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jitsi Meeting with Recording</title>
+    <title>Jitsi Meeting Room</title>
     <style>
-        #jitsi-meet {
-            height: 600px;
-            width: 100%;
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
         }
-        button {
-            margin-top: 20px;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: #95a5a6;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #7f8c8d;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #34495e;
+            text-align: center;
+        }
+
+        #jitsi-container {
+            width: 100%;
+            height: 600px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            #jitsi-container {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            #jitsi-container {
+                height: 300px;
+            }
+
+            .back-button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
+
 <body>
-    <h1>Jitsi Meeting Room</h1>
-    
-    <h1>Joining Meeting: {{ meeting.meeting_topic }}</h1>
-<div id="jitsi-container" style="width: 100%; height: 600px;"></div>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" id="back-button">← Back</button> <!-- Back Button at the Top Left -->
+            <h1>Welcome to the Jitsi Meeting Room</h1>
+        </div>
+        <h2>Now Joining: {{ meeting.meeting_topic }}</h2>
 
-<script src="https://meet.jit.si/external_api.js"></script>
-<script>
-    const domain = "meet.jit.si";
-    const options = {
-        roomName: "{{ meeting.meeting_id }}",
-        width: '100%',
-        height: 600,
-        parentNode: document.querySelector('#jitsi-container')
-    };
-    const api = new JitsiMeetExternalAPI(domain, options);
-</script>
+        <div id="jitsi-container"></div>
 
+        <div class="footer">
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script>
+        const domain = "meet.jit.si";
+        const roomId = "{{ meeting.meeting_id }}"; // Use your meeting ID to name the file
+
+        const options = {
+            roomName: roomId,
+            width: '100%',
+            height: 600,
+            parentNode: document.querySelector('#jitsi-container')
+        };
+
+        const api = new JitsiMeetExternalAPI(domain, options);
+
+        // Back button logic
+        document.getElementById('back-button').addEventListener('click', function () {
+            window.history.back(); // Navigate back to the previous page
+        });
+    </script>
 </body>
+
 </html>
