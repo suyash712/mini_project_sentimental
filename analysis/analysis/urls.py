@@ -25,26 +25,19 @@ urlpatterns = [
     path('meet',views.meet),
     path('',views.home),
     path('home',views.home),
+    
     path('login',views.login),
     path('meetlist',views.meetlist),
     path('meetoption',views.meetoption),
-    path('meeting/<str:room_name>/', views.join_meeting, name='join_meeting'),
+   
     path('schedule-meeting/', views.schedule_meeting, name='schedule_meeting'),
     path('meeting-success/', views.meeting_success, name='meeting_success'), 
-       path('list', views.meeting_list, name='meeting_list'),
+    path('list', views.meeting_list, name='meeting_list'),
     path('join-meeting/<str:meeting_id>/', views.join_meeting, name='join_meeting'),
-      path('meeting/<int:meeting_id>/', views.view_meeting_details, name='view_meeting_details'),
-
-
-      path('upload_meeting_file/<str:meeting_id>/', views.upload_meeting_file, name='upload_meeting_file'),
-    path('mark-completed/<str:meeting_id>/', views.mark_meeting_completed, name='mark_meeting_completed'),
- path('meeting/<int:pk>/', views.meeting_detail, name='meeting_detail'),
-
-     
-    
+    path('meeting/<int:meeting_id>/', views.view_meeting_details, name='view_meeting_details'),
+    path('upload_meeting_file/<str:meeting_id>/', views.upload_meeting_file, name='upload_meeting_file'),
+    path('meeting/<int:pk>/', views.meeting_detail, name='meeting_detail'),
     path('meeting/<str:meeting_id>/analyze/', views.analyze_meeting_view, name='analyze_meeting'),
     path('meeting/<str:meeting_id>/upload/', views.upload_meeting_file, name='upload_meeting_file'),
-    path('meeting/<str:meeting_id>/complete/', views.mark_meeting_completed, name='mark_meeting_completed'),
-    
-   
+    path('get-emotion-data/<str:meeting_id>/', views.get_emotion_data, name='get_emotion_data'),
 ]

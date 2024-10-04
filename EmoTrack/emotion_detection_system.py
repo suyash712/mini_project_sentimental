@@ -13,7 +13,7 @@ current_dir = os.getcwd()
 
 # Specify the paths to your model files
 model_json_path = os.path.join(current_dir, 'EmoTrack', 'facialemotionmodel.json')
-model_weights_path = os.path.join(current_dir, 'EmoTrack', 'facialmotionmodel.h5')
+model_weights_path = os.path.join(current_dir, 'EmoTrack', 'face_model.h5')
 
 # Check if model files exist
 if not os.path.exists(model_json_path):
@@ -35,7 +35,7 @@ except Exception as e:
 emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
 # Specify the path to your video file
-video_path = os.path.join(current_dir, 'EmoTrack', 'Untitled video - Made with Clipchamp.mp4')
+video_path = os.path.join(current_dir, 'EmoTrack', 'InstantEchoesHookPatiently_2024-10-02T12_41_13.691Z.webm')
 
 # Check if video file exists
 if not os.path.exists(video_path):
@@ -68,11 +68,12 @@ detected_emotions = {emotion: [] for emotion in emotion_labels}
 frame_number = 0
 
 while True:
+
     # Capture frame-by-frame
     ret, frame = cap.read()
     if not ret:
         break
-
+    
     frame_number += 1
 
     # Process only every frame_skip frames

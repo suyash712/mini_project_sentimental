@@ -115,28 +115,28 @@
                 {% for meeting in completed_meetings %}
                 <tr>
                     <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ forloop.counter }}</div>
+                        <div type="button" class="meeting-row" data-id="{{ meeting.meeting_id }}" data-bs-toggle="modal" data-bs-target="#reportModal">{{ forloop.counter }}</div>
                     </td>
                     <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.meeting_id }}</div>
+                        <div type="button" class="meeting-row" data-id="{{ meeting.meeting_id }}" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.meeting_id }}</div>
                     </td>
                     <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.meeting_topic }}</div>
+                        <div type="button" class="meeting-row" data-id="{{ meeting.meeting_id }}" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.meeting_topic }}</div>
                     </td>
                     <td>
-                        <div type="button" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.start_time }}</div>
+                        <div type="button" class="meeting-row" data-id="{{ meeting.meeting_id }}" data-bs-toggle="modal" data-bs-target="#reportModal">{{ meeting.start_time }}</div>
                     </td>
-                </tr>
+                </tr>g
                 {% empty %}
                 <tr>
                     <td colspan="4" class="text-center">No completed meetings found.</td>
                 </tr>
+                
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
 
 <!-- Modal -->
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
@@ -147,71 +147,37 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <span class="badge text-bg-primary">{{meeting.meeting_id}}</span>
                 <div class="container-fluid">
-                    <div class="text-center mb-3">
-                        <p class="lead">Name: John Doe | Date: 2024-08-29</p>
-                    </div>
-
                     <!-- 2x2 Graph Layout -->
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="chart-container">
                                 <h6 class="chart-heading">Confidence Level Over Time</h6>
-                                <div class="chart-wrapper">
-                                    <canvas id="confidenceChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="description-box">
-                                Confidence Level Over Time: This chart shows the candidate's confidence level throughout the interview, measured on a scale from 60 to 95. The confidence level starts at 60, then rises to 75 at the 5-minute mark. It dips slightly to 70 at 10 minutes, then increases steadily to 95 by the end.
+                                <canvas id="confidenceChart"></canvas>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="chart-container">
                                 <h6 class="chart-heading">Emotional Breakdown</h6>
-                                <div class="chart-wrapper">
-                                    <canvas id="emotionPieChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="description-box">
-                                Emotional Breakdown: Confidence is the dominant emotion, followed by excitement, nervousness, and fear. This indicates a range of emotions, with confidence being the strongest.
+                                <canvas id="emotionPieChart"></canvas>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="chart-container">
                                 <h6 class="chart-heading">Nervousness Over Interview Duration</h6>
-                                <div class="chart-wrapper">
-                                    <canvas id="nervousnessChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="description-box">
-                                Nervousness Over Time: Nervousness peaks at the 10-minute mark but remains elevated for a significant portion of the interview, with a slight decrease towards the end.
+                                <canvas id="nervousnessChart"></canvas>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="chart-container">
                                 <h6 class="chart-heading">Positive vs Negative Emotion Ratio</h6>
-                                <div class="chart-wrapper">
-                                    <canvas id="positiveNegativeChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="description-box">
-                                Positive vs Negative: The interview was largely positive, with 70% of emotions being positive and only 30% being negative.
+                                <canvas id="positiveNegativeChart"></canvas>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Emotion Summary -->
-                    <div class="emotion-summary mt-4 p-3 bg-light rounded">
-                        <h6 class="text-center mb-3">Emotion Summary</h6>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p><strong>Most Common:</strong> Confidence</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p><strong>Highest Peak:</strong> Nervousness</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p><strong>Dominant Emotion:</strong> Confidence</p>
+                        <div class="col-12">
+                            <div class="chart-container" style="position: relative; height:60vh; width:100%">
+                                <canvas id="emotionChart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -265,6 +231,115 @@
         </div>
     </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script>
+    // Global chart object
+let emotionChart;
+
+document.querySelectorAll('.meeting-row').forEach(row => {
+    row.addEventListener('click', function() {
+        const meetingId = this.getAttribute('data-id');
+        
+        fetch(`/get-emotion-data/${meetingId}/`)
+            .then(response => response.json())
+            .then(data => {
+                updateEmotionChart('emotionChart', data.emotions);
+            });
+    });
+});
+
+function updateEmotionChart(canvasId, emotions) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    
+    // Prepare data
+    const emotionTypes = [...new Set(emotions.map(e => e.emotion))];
+    const datasets = emotionTypes.map(emotion => ({
+        label: emotion,
+        data: emotions.filter(e => e.emotion === emotion).map(e => ({
+            x: e.timestamp * 1000, // Convert to milliseconds
+            y: e.intensity
+        })),
+        borderColor: getColorForEmotion(emotion),
+        fill: false,
+        tension: 0.1
+    }));
+
+    // Destroy existing chart if it exists
+    if (emotionChart) {
+        emotionChart.destroy();
+    }
+    
+    // Create new chart
+    emotionChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'second',
+                        displayFormats: {
+                            second: 'HH:mm:ss'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Time'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 1,
+                    title: {
+                        display: true,
+                        text: 'Intensity'
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Emotion Intensity Over Time'
+                },
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            return new Date(tooltipItems[0].parsed.x).toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function getColorForEmotion(emotion) {
+    const colorMap = {
+        'Confidence': 'rgb(54, 162, 235)',
+        'Nervousness': 'rgb(255, 99, 132)',
+        'Happiness': 'rgb(255, 206, 86)',
+        'Sadness': 'rgb(75, 192, 192)',
+        'Anger': 'rgb(255, 159, 64)',
+        'Surprise': 'rgb(153, 102, 255)'
+    };
+    return colorMap[emotion] || `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)})`;
+}
+
+// Update chart when modal is shown
+$('#reportModal').on('shown.bs.modal', function () {
+    if (emotionChart) emotionChart.update();
+});
+</script>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -296,97 +371,170 @@
 <script src="list.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Chart.js Logic -->
 <script>
-    const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: {
-            position: 'bottom',
-            labels: {
-                boxWidth: 12,
-                font: {
-                    size: 10
-                }
-            }
-        }
-    }
+    // Emotion mapping to confidence and nervousness levels
+const emotionMapping = {
+    'Sad': { confidence: 0.3, nervousness: 0.7 },
+    'Neutral': { confidence: 0.5, nervousness: 0.5 },
+    'Happy': { confidence: 0.8, nervousness: 0.2 },
+    'Angry': { confidence: 0.6, nervousness: 0.8 },
+    'Surprised': { confidence: 0.4, nervousness: 0.6 },
+    'Fearful': { confidence: 0.2, nervousness: 0.9 },
+    'Disgusted': { confidence: 0.4, nervousness: 0.7 },
+    // Add more emotions as needed
 };
-    // Confidence Level Over Time (Line Chart)
-    const confidenceCtx = document.getElementById('confidenceChart').getContext('2d');
-    const confidenceChart = new Chart(document.getElementById('confidenceChart').getContext('2d'), {
+
+// Function to process emotion data
+function processEmotionData(emotions) {
+    return emotions.map(e => ({
+        timestamp: e.timestamp,
+        confidence: (emotionMapping[e.emotion]?.confidence || 0.5) * e.intensity,
+        nervousness: (emotionMapping[e.emotion]?.nervousness || 0.5) * e.intensity,
+        originalEmotion: e.emotion,
+        intensity: e.intensity
+    }));
+}
+
+// Function to calculate rolling average
+function calculateRollingAverage(data, windowSize = 5) {
+    return data.map((val, index, array) => {
+        const start = Math.max(0, index - windowSize + 1);
+        const window = array.slice(start, index + 1);
+        return window.reduce((sum, curr) => sum + curr, 0) / window.length;
+    });
+}
+
+// Function to update charts
+function updateCharts(emotions) {
+    const processedData = processEmotionData(emotions);
+    const timestamps = processedData.map(d => d.timestamp);
+    
+    const confidenceData = processedData.map(d => d.confidence);
+    const nervousnessData = processedData.map(d => d.nervousness);
+    
+    const rollingConfidence = calculateRollingAverage(confidenceData);
+    const rollingNervousness = calculateRollingAverage(nervousnessData);
+    
+    updateChart('confidenceChart', timestamps, rollingConfidence, 'Confidence Level (Inferred)');
+    updateChart('nervousnessChart', timestamps, rollingNervousness, 'Nervousness Level (Inferred)');
+    
+    // Update other charts
+    updateEmotionalBreakdownChart(emotions);
+    updatePositiveNegativeRatioChart(emotions);
+}
+
+// Function to update a single chart
+function updateChart(canvasId, labels, data, label) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Start', '5 min', '10 min', '15 min', '20 min', 'End'],
+            labels: labels,
             datasets: [{
-                label: 'Confidence Level',
-                data: [60, 75, 70, 85, 90, 95],
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                label: label,
+                data: data,
+                borderColor: label.includes('Confidence') ? 'blue' : 'red',
                 borderWidth: 2,
-                fill: true
-            }]
-        },
-        options: chartOptions
-    });
-
-    // Emotional Breakdown (Pie Chart)
-    const emotionPieCtx = document.getElementById('emotionPieChart').getContext('2d');
-    const emotionPieChart = new Chart(emotionPieCtx, {
-        type: 'pie',
-        data: {
-            labels: ['Confidence', 'Excitement', 'Nervousness', 'Fear'],
-            datasets: [{
-                label: 'Emotion Breakdown',
-                data: [40, 30, 20, 10],
-                backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545'],
-                hoverOffset: 4
+                fill: false
             }]
         },
         options: {
-            responsive: true
-        }
-    });
-
-    // Nervousness Over Interview Duration (Bar Chart)
-    const nervousnessCtx = document.getElementById('nervousnessChart').getContext('2d');
-    const nervousnessChart = new Chart(nervousnessCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Start', '5 min', '10 min', '15 min', '20 min', 'End'],
-            datasets: [{
-                label: 'Nervousness Level',
-                data: [20, 30, 50, 40, 35, 25],
-                backgroundColor: 'rgba(255, 193, 7, 0.7)',
-                borderColor: 'rgba(255, 193, 7, 1)',
-                borderWidth: 2
-            }]
-        },
-        options: {
+            responsive: true,
             scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: 'Time (seconds)'
+                    }
+                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    max: 1,
+                    title: {
+                        display: true,
+                        text: 'Level'
+                    }
                 }
             }
         }
     });
+}
 
-    // Positive vs Negative Emotion Ratio (Doughnut Chart)
-    const positiveNegativeCtx = document.getElementById('positiveNegativeChart').getContext('2d');
-    const positiveNegativeChart = new Chart(positiveNegativeCtx, {
-        type: 'doughnut',
+// Update this part in your existing click event listener
+document.querySelectorAll('.meeting-row').forEach(row => {
+    row.addEventListener('click', function() {
+        const meetingId = this.getAttribute('data-id');
+        
+        fetch(`/get-emotion-data/${meetingId}/`)
+            .then(response => response.json())
+            .then(data => {
+                updateCharts(data.emotions);
+            });
+    });
+});
+
+// Function to update the Emotional Breakdown chart
+function updateEmotionalBreakdownChart(emotions) {
+    const emotionCounts = emotions.reduce((acc, e) => {
+        acc[e.emotion] = (acc[e.emotion] || 0) + 1;
+        return acc;
+    }, {});
+
+    const ctx = document.getElementById('emotionPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
         data: {
-            labels: ['Positive', 'Negative'],
+            labels: Object.keys(emotionCounts),
             datasets: [{
-                label: 'Positive vs Negative',
-                data: [70, 30],
-                backgroundColor: ['#28a745', '#dc3545']
+                data: Object.values(emotionCounts),
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF'
+                ]
             }]
         },
         options: {
-            responsive: true
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Emotional Breakdown'
+            }
         }
     });
+}
+
+// Function to update the Positive vs Negative Emotion Ratio chart
+function updatePositiveNegativeRatioChart(emotions) {
+    const positiveEmotions = ['Happy', 'Surprised'];
+    const negativeEmotions = ['Sad', 'Angry', 'Fearful', 'Disgusted'];
+    
+    const positiveCount = emotions.filter(e => positiveEmotions.includes(e.emotion)).length;
+    const negativeCount = emotions.filter(e => negativeEmotions.includes(e.emotion)).length;
+    const neutralCount = emotions.length - positiveCount - negativeCount;
+
+    const ctx = document.getElementById('positiveNegativeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Positive', 'Negative', 'Neutral'],
+            datasets: [{
+                data: [positiveCount, negativeCount, neutralCount],
+                backgroundColor: ['#4CAF50', '#F44336', '#FFC107']
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Positive vs Negative Emotion Ratio'
+            }
+        }
+    });
+}
 </script>
 <script>$('#reportModal').on('shown.bs.modal', function () {
     confidenceChart.update(); 

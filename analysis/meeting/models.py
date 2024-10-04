@@ -16,9 +16,10 @@ class Meeting(models.Model):
 
 class EmotionData(models.Model):
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)  # Assuming you have a Meeting model
-    timestamp = models.DateTimeField()  # Time of the emotion capture
+    timestamp = models.FloatField()  # Time of the emotion capture
     emotion = models.CharField(max_length=100)  # Emotion type (e.g., "Confidence", "Nervousness")
-    intensity = models.FloatField()  # Emotion intensity (0.0 to 1.0)
+    intensity = models.FloatField()
+    # Emotion intensity (0.0 to 1.0)
 
     def __str__(self):
         return f"{self.emotion} at {self.timestamp}"

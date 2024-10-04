@@ -268,8 +268,8 @@ h3 {
                                 <th>Meeting ID</th>
                                 <th>Date & Time</th>
                                 <th>Upload File/Video</th>
-                                <th>Mark as Completed</th>
                                 <th>Analyze Emotions</th>
+                                <th>Join Meeting</th> <!-- New column for Join Meeting -->
                             </tr>
                         </thead>
                         <tbody>
@@ -290,14 +290,6 @@ h3 {
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <form action="{% url 'mark_meeting_completed' meeting.meeting_id %}" method="post" onsubmit="return confirmMarkCompleted();">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-success" {% if not meeting.file %}disabled{% endif %}>
-                                            Mark as Completed
-                                        </button>
-                                    </form>
-                                </td>
-                                <td>
                                     {% if meeting.file %}
                                     <form id="analyze-form-{{ meeting.meeting_id }}" action="{% url 'analyze_meeting' meeting.meeting_id %}" method="post" onsubmit="return confirmAnalyze();">
                                         {% csrf_token %}
@@ -307,6 +299,10 @@ h3 {
                                         <span>Upload a video first</span>
                                     {% endif %}
                                 </td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="redirectToMeeting('{{ meeting.meeting_id }}')">Join Meeting</button>
+                                </td>
+                                 <!-- Join Meeting button -->
                             </tr>
                             {% empty %}
                             <tr>
@@ -317,6 +313,9 @@ h3 {
                     </table>
                 </div>
             </div>
+        
+    
+    
     
             <script>
                 function confirmAnalyze() {
@@ -500,6 +499,15 @@ h3 {
                 .catch(error => console.error('Error:', error));
             });
         </script>
+        <script>
+            function redirectToMeeting(meetingId) {
+                const jitsiUrl = `https://meet.jit.si/${meetingId}`;
+                window.location.href = jitsiUrl;  // Redirect to Jitsi meeting with meeting ID
+            }
+            </script>
+            
+       
+       
         
 
     

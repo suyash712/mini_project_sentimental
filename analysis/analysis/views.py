@@ -4,6 +4,16 @@ from meeting.models import Meeting,EmotionData
 from django.utils import timezone
 from .ml_model.emotion_detection_system import analyze_video
 import datetime
+import requests
+from django.http import JsonResponse
+from .forms import MeetingForm
+from datetime import datetime
+
+from django.shortcuts import render, redirect
+import jwt
+import datetime
+from django.shortcuts import redirect
+from django.core.files.storage import FileSystemStorage
 
 def meet(request):
     return render(request,'meeting.html')
@@ -18,64 +28,12 @@ def meetlist(request):
 def meetoption(request):
     return render(request,'mettingoption.html')
 
-import requests
-from django.http import JsonResponse
+def meeting_schedule(request):
+    return render(request,'meeting_schedule.html')
+
 #from zego_express_engine import ZegoExpressEngine
 
 
-
-
-
-
-# views.py
-from django.shortcuts import render, redirect
-import jwt
-import datetime
-
-
-
-
-
-'''
-from daily_co.client import DailyClient
-
-def start_recording(request):
-    daily_client = DailyClient(api_key='YOUR_DAILY_API_KEY')
-    meeting_id = 'cVW0bSro3jr3xQiUqPll'  # Replace with your meeting ID
-
-    try:
-        response = daily_client.start_recording(meeting_id, layout={
-            'type': 'grid',
-            'participants': 'include-all'
-        })
-        if response['status'] == 'recording':
-            return JsonResponse({'message': 'Recording started'}, status=200)
-        else:
-            return JsonResponse({'error': 'Failed to start recording'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
-
-def stop_recording(request):
-    daily_client = DailyClient(api_key='YOUR_DAILY_API_KEY')
-    meeting_id = 'cVW0bSro3jr3xQiUqPll'  # Replace with your meeting ID
-
-    try:
-        response = daily_client.stop_recording(meeting_id)
-        if response['status'] == 'idle':
-            # Save the recorded video to the database
-            recorded_video = RecordedVideo(meeting_id=meeting_id, video_file=response['recording_urls']['mp4'])
-            recorded_video.save()
-            return JsonResponse({'message': 'Recording stopped and saved'}, status=200)
-        else:
-            return JsonResponse({'error': 'Failed to stop recording'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
-
-        '''
-
-
-from .forms import MeetingForm
-from datetime import datetime
 def schedule_meeting(request):
     if request.method == 'POST':
         # Get form data from POST request
@@ -107,9 +65,7 @@ def schedule_meeting(request):
         return redirect('meeting_list')  # Ensure 'meeting_list' is a valid URL name
 
     return render(request, 'schedule_meeting.html')
-def generate_meeting_id():
-    import uuid
-    return str(uuid.uuid4())  # Example using UUID to generate a unique ID
+ # Example using UUID to generate a unique ID
 
 def meeting_list(request):
     # Get the current time
@@ -137,17 +93,10 @@ def join_meeting(request, meeting_id):
     meeting = Meeting.objects.get(meeting_id=meeting_id)
     return render(request, 'join_meeting.html', {'meeting': meeting})
 
-def mark_completed_meetings():
-    now = timezone.now()
-    meetings = Meeting.objects.filter(is_completed=False, start_time__lt=now)
-    meetings.update(is_completed=True)    
-
-
-def meeting_schedule(request):
-    return render(request,'meeting_schedule.html')
-
+  
 def meeting_success(request):
     return render(request, 'meeting_success.html')
+
 def view_meeting_details(request, meeting_id):
     meeting = get_object_or_404(Meeting, id=meeting_id)
     return render(request, 'meeting_details.html', {'meeting': meeting})
@@ -155,8 +104,7 @@ def view_meeting_details(request, meeting_id):
 def login(request):
     return render(request,'login.html')
 
-from django.shortcuts import redirect
-from django.core.files.storage import FileSystemStorage
+
 
 # Handle file/video upload
 
@@ -177,66 +125,10 @@ def upload_meeting_file(request, meeting_id):
         return redirect(meeting_list)
 # Handle marking the meeting as completed
 
-def mark_meeting_completed(request, meeting_id):
-    meetings = Meeting.objects.filter(meeting_id=meeting_id)
-    if not meetings.exists():
-        return HttpResponse('Meeting not found')
-
-    if request.method == 'POST':
-        # Mark all meetings with this meeting_id as completed
-        for meeting in meetings:
-            meeting.is_completed = True
-            meeting.save()
-
-        return redirect(meeting_list)  # Redirect to the relevant page after marking as completed
+  # Redirect to the relevant page after marking as completed
   # redirect to the meeting page or another page
 
-
-def process_video(video_file):
-    # Assume you have logic here to analyze the video
-    # and capture emotions over time
-
-    emotions = analyze_video(video_file)  # This should return a list of emotion data
-    meeting_instance = Meeting.objects.get(pk=meeting_id)  # Get the corresponding meeting instance
-
-    for emotion in emotions:
-        EmotionData.objects.create(
-            meeting=meeting_instance,
-            timestamp=emotion['timestamp'],  # e.g., time of detection
-            emotion=emotion['emotion'],  # e.g., "Confidence"
-            intensity=emotion['intensity'],  # e.g., intensity score
-        )
-
-
-
-def report_view(request, meeting_id):
-    meeting = Meeting.objects.get(pk=meeting_id)
-    emotions = EmotionData.objects.filter(meeting=meeting).order_by('timestamp')
-
-    # Process the emotions to generate data for charts
-    emotion_summary = generate_emotion_summary(emotions)
-
-    return render(request, 'your_template.html', {
-        'meeting': meeting,
-        'emotion_summary': emotion_summary,
-    })
-def generate_emotion_summary(emotions):
-    summary = {
-        'confidence': 0,
-        'excitement': 0,
-        'nervousness': 0,
-        'fear': 0,
-        'count': 0,
-    }
-    for emotion in emotions:
-        summary[emotion.emotion.lower()] += emotion.intensity
-        summary['count'] += 1
-
-    for key in summary:
-        if key != 'count':
-            summary[key] = summary[key] / summary['count'] if summary['count'] > 0 else 0
-
-    return summary        
+    
 
 
 
@@ -342,7 +234,7 @@ model = load_emotion_model()
 from django.core.cache import cache
 
 def analyze_meeting_emotions(meeting_id):
-    print(f"Analyzing meeting with ID: {meeting_id}")  # Debugging line
+    print(f"Analyzing meeting with ID: {meeting_id}")
     meeting = get_object_or_404(Meeting, meeting_id=meeting_id)
 
     if not meeting.file:
@@ -365,10 +257,6 @@ def analyze_meeting_emotions(meeting_id):
 
     detected_emotions = {emotion: [] for emotion in emotion_labels}
     frame_number = 0
-
-    # Initialize progress tracking
-    total_steps = total_frames // frame_skip
-    cache.set(f'analysis_progress_{meeting_id}', 0)  # Reset progress at the start
 
     while True:
         ret, frame = cap.read()
@@ -393,33 +281,40 @@ def analyze_meeting_emotions(meeting_id):
             emotion = emotion_labels[np.argmax(preds)]
             detected_emotions[emotion].append(frame_number)
 
-            # Save the emotion to the database
+            # Calculate video time (in seconds)
+            video_time = frame_number / fps  # This should be a float representing seconds
+
+            # Save the emotion to the database with video time
             EmotionData.objects.create(
                 meeting=meeting,
-                timestamp=datetime.now(),
+                timestamp=video_time,  # This should be a float (seconds from start of video)
                 emotion=emotion,
                 intensity=float(np.max(preds))
             )
 
-        # Update progress in cache
-        progress = (frame_number // frame_skip) / total_steps * 100
-        cache.set(f'analysis_progress_{meeting_id}', progress)
-
     cap.release()
     return detected_emotions
+
+
+
 from django.core.cache import cache
 def analyze_meeting_view(request, meeting_id):
+    meeting = get_object_or_404(Meeting, meeting_id=meeting_id)
     if request.method == 'POST':
         try:
             emotions_summary = analyze_meeting_emotions(meeting_id)
             if 'error' in emotions_summary:
                 return JsonResponse({'success': False, 'error': emotions_summary['error']}, status=400)
-            return JsonResponse({'success': True, 'emotions': emotions_summary})
+            
+            meeting.is_completed = True
+            meeting.save()
+            return redirect(meeting_list)
         except Exception as e:
             logger.error(f"Error analyzing meeting {meeting_id}: {str(e)}")
             return JsonResponse({'success': False, 'error': 'An unexpected error occurred. Please try again.'}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 def get_analysis_progress(request, meeting_id):
     if request.method == 'GET':
@@ -427,17 +322,19 @@ def get_analysis_progress(request, meeting_id):
         return JsonResponse({'progress': progress})
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-def meeting_report(request, meeting_id):
-    meeting = Meeting.objects.get(id=meeting_id)
-    emotion_data = EmotionData.objects.filter(meeting=meeting).values('timestamp', 'emotion', 'intensity')
-
-    confidence_data = [item['intensity'] for item in emotion_data if item['emotion'] == 'confidence']
-    timestamps = [item['timestamp'] for item in emotion_data]
-
-    context = {
-        'meeting': meeting,
-        'timestamps': timestamps,
-        'confidence_data': confidence_data,
-        # Add additional data if needed for other charts
+def get_emotion_data(request, meeting_id):
+    meeting = get_object_or_404(Meeting, meeting_id=meeting_id)
+    emotions = EmotionData.objects.filter(meeting=meeting).order_by('timestamp')  # Get emotions for the meeting
+    emotion_data = {
+        'emotions': [
+            {
+                'timestamp': emotion.timestamp,
+                'emotion': emotion.emotion,
+                'intensity': emotion.intensity,
+            }
+            for emotion in emotions
+        ]
     }
-    return render(request, 'meeting_report.html', context)    
+    return JsonResponse(emotion_data)  
+
+    
